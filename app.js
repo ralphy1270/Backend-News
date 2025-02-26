@@ -2,10 +2,9 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
-app.use(express.json()); // Built-in body parser
+app.use(express.json());
 app.use(cors());
 
-// Predefined categories
 const VALID_TAGS = ["Sports", "Headlines", "Entertainment"];
 
 let news = [
@@ -46,11 +45,10 @@ let news = [
   },
 ];
 
-// ✅ Get paginated news (Infinite Scroll) with optional category filter
 app.get("/news", (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = 3;
-  const category = req.query.category; // Optional filter by tag
+  const category = req.query.category;
 
   let filteredNews = news;
   if (category && VALID_TAGS.includes(category)) {
@@ -62,7 +60,6 @@ app.get("/news", (req, res) => {
   res.json(filteredNews.slice(startIndex, endIndex));
 });
 
-// ✅ Add news with category tag
 app.post("/news", (req, res) => {
   const { title, content, tag } = req.body;
 
@@ -83,14 +80,12 @@ app.post("/news", (req, res) => {
   res.status(201).json(newArticle);
 });
 
-// ✅ Delete news
 app.delete("/news/:id", (req, res) => {
   const id = parseInt(req.params.id);
   news = news.filter((n) => n.id !== id);
   res.json({ message: "News deleted" });
 });
 
-// ✅ Like a news article
 app.post("/news/:id/like", (req, res) => {
   const id = parseInt(req.params.id);
   const article = news.find((n) => n.id === id);
@@ -102,7 +97,6 @@ app.post("/news/:id/like", (req, res) => {
   }
 });
 
-// ✅ Dislike a news article
 app.post("/news/:id/dislike", (req, res) => {
   const id = parseInt(req.params.id);
   const article = news.find((n) => n.id === id);
@@ -114,5 +108,4 @@ app.post("/news/:id/dislike", (req, res) => {
   }
 });
 
-// Start server
 app.listen(5000, () => console.log("Server running on port 5000"));
